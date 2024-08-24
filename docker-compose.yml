@@ -1,0 +1,54 @@
+services:
+    backend:
+        restart: always
+        container_name: backend
+        build: ./dockers/build/
+        volumes:
+            - .:/var/www/sfvn_app:rw
+        ports:
+            - "80:80"
+        depends_on:
+            - database
+            - cache
+        networks:
+            - app-network
+    database:
+        image: mysql:latest
+        restart: always
+        container_name: database
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./dockers/data/mysql_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+            MYSQL_DATABASE: "${DB_DATABASE}"
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+        networks:
+            - app-network
+    cache:
+        image: bitnami/redis:latest
+        restart: always
+        container_name: redis_cache
+        ports:
+            - "5540:5540"
+        environment:
+            ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - ./dockers/data/redis:/bitnami/redis/data
+        networks:
+            - app-network
+
+    ###___FOR DEVELOPMENT ONLY___###
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - "8080:8080"
+        networks:
+            - app-network
+networks:
+    app-network:
+        driver: bridge
+ 
