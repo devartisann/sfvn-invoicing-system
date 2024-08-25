@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FruitCategoryController;
+use App\Http\Controllers\FruitController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function(){
+    Route::get('fruits', [FruitController::class, 'index'])->name('fruit.index');
+    Route::post('fruits', [FruitController::class, 'store'])->name('fruit.store');
     Route::get('fruit/categories', [FruitCategoryController::class, 'index'])->name('fruit.category.index');
-    Route::post('fruit/category', [FruitCategoryController::class, 'store'])->name('fruit.category.store');
+    Route::post('fruit/categories', [FruitCategoryController::class, 'store'])->name('fruit.category.store');
 });
 
 require __DIR__.'/auth.php';

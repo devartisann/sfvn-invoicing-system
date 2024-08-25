@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class FruitCategoryController extends Controller
 {
@@ -35,6 +36,7 @@ class FruitCategoryController extends Controller
     /**
      * @param Request $request
      * @return RedirectResponse
+     * @throws InvalidArgumentException
      */
     public function store(Request $request): RedirectResponse
     {
@@ -49,6 +51,8 @@ class FruitCategoryController extends Controller
         
         $category = FruitCategory::factory()->make($validator->safe(['name']));
         $category->save();
+
+        cache()->delete('fruit_categories_data');
 
         return redirect(route('fruit.category.index'));
     }
